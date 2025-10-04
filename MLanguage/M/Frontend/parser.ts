@@ -3,6 +3,7 @@ import {
   BinaryExpr,
   Expr,
   Identifier,
+  NullLiteral,
   NumericLiteral,
   Program,
   Stmt,
@@ -110,6 +111,9 @@ export default class Parser {
       case TokenType.Identifier:
         return { kind: "Identifier", symbol: this.eat().value } as Identifier;
 
+      case TokenType.Null:
+        this.eat();
+        return { kind: "NullLiteral", value: "null" } as NullLiteral;
       case TokenType.Number:
         return {
           kind: "NumericLiteral",
@@ -123,6 +127,8 @@ export default class Parser {
           TokenType.CloseParen,
           "Unexpected token found inside parenthesised expression. Expected closing parenthesis.",
         ); 
+
+      
         return value;
       }
 
