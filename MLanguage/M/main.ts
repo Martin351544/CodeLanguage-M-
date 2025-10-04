@@ -1,10 +1,17 @@
 import Parser from "./Frontend/parser.ts";
+import Enviornment from "./Runtime/enviornment.ts";
 import { evaluate } from "./Runtime/interpreter.ts";
+import { MK_Bool, MK_NULL, MK_NUMBER } from "./Runtime/values.ts";
 
 repl();
 
 function repl() {
   const parser = new Parser();
+  const env = new Enviornment();
+  env.declareVar("x", MK_NUMBER(100));
+  env.declareVar("true", MK_Bool(true));
+  env.declareVar("false", MK_Bool(false));
+  env.declareVar("null", MK_NULL());
   console.log("\nRepl v0.1");
 
   
@@ -18,7 +25,7 @@ function repl() {
     const program = parser.produceAST(input);
 
 
-    const result = evaluate(program);
+    const result = evaluate(program, env);
     console.log(result);
 
   }
