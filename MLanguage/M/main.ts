@@ -1,3 +1,5 @@
+// cd to C:\Users\Admin\Documents\GitHub\CodeLanguage-M-\MLanguage\M
+// type deno run main.ts
 import Parser from "./Frontend/parser.ts";
 import Enviornment from "./Runtime/enviornment.ts";
 import { evaluate } from "./Runtime/interpreter.ts";
@@ -8,10 +10,10 @@ repl();
 function repl() {
   const parser = new Parser();
   const env = new Enviornment();
-  env.declareVar("x", MK_NUMBER(100));
-  env.declareVar("true", MK_Bool(true));
-  env.declareVar("false", MK_Bool(false));
-  env.declareVar("null", MK_NULL());
+  env.declareVar("x", MK_NUMBER(100), false);
+  env.declareVar("true", MK_Bool(true), true);
+  env.declareVar("false", MK_Bool(false), true);
+  env.declareVar("null", MK_NULL(), true);
   console.log("\nRepl v0.1");
 
   

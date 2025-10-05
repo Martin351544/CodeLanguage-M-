@@ -1,51 +1,12 @@
-import { NullVal ,NumberVal ,ValueTypes, RuntimeVal, MK_NULL } from "./values.ts"
-import { BinaryExpr, Identifier, NodeType, NumericLiteral, Program, Stmt } from "../Frontend/ast.ts"
+import { NumberVal , RuntimeVal } from "./values.ts"
+import { BinaryExpr, Identifier, NumericLiteral, Program, Stmt, VarDecleration } from "../Frontend/ast.ts"
 import Enviornment from "./enviornment.ts";
+import { eval_program, eval_var_devleration } from "./eval/staements.ts";
+import { eval_binary_expr, eval_identifier } from "./eval/expressions.ts";
 
 
-function eval_program(program: Program, env: Enviornment): RuntimeVal {
 
-  let lastEvaluated: RuntimeVal = MK_NULL();
 
-  for (const statement of program.body) {
-    lastEvaluated = evaluate(statement, env);
-  }
-  return lastEvaluated;
-}
-
-function eval_numeric_binary_expr(lhs: NumberVal, rhs: NumberVal, operator: string): NumberVal {
-  let result: number;
-  if(operator == "+")
-    result = lhs.value + rhs.value;
-  else if (operator == "-")
-    result = lhs.value - rhs.value;
-  else if (operator == "*")
-    result = lhs.value * rhs.value;
-  else if (operator == "/")
-    result = lhs.value / rhs.value;
-  else{
-    result = lhs.value % rhs.value;
-  }
-
-  return { value: result, type: "number" };
-}
-
-function eval_binary_expr (binop: BinaryExpr, env: Enviornment): RuntimeVal {
-  
-  const lhs = evaluate(binop.left, env);
-  const rhs = evaluate(binop.right, env);
-
-  if(lhs.type == "number" && rhs.type == "number"){
-    return eval_numeric_binary_expr(lhs as NumberVal, rhs as NumberVal, binop.operator);
-  }
-
-  return { type: "null", value: null } as NullVal;
-}
-
-function eval_identifier(ident: Identifier, env: Enviornment ): RuntimeVal {
-  const val = env.lookupVar(ident.symbol);
-  return val;
-}
 
 export function evaluate(astNode: Stmt, env: Enviornment): RuntimeVal {
   switch (astNode.kind) {
@@ -60,8 +21,13 @@ export function evaluate(astNode: Stmt, env: Enviornment): RuntimeVal {
       return eval_program(astNode as Program, env);
     case "Identifier":
       return eval_identifier (astNode as Identifier, env);
+    
+    case "VarDecleration":
+      return eval_var_devleration(astNode as VarDecleration, env);
     default:
         console.error("This AST Node has not yet been set up for interpretation", astNode);
         Deno.exit(1);
   }
 }
+
+
