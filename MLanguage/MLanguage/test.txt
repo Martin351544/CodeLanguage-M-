@@ -10,3 +10,5 @@ const obj = {
   },
 };
 
+
+foo = obj.foo(bar(x , y)) + 5
