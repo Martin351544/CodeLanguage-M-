@@ -1,3 +1,4 @@
+// for computer cd C:\Users\marti\OneDrive\Documents\GitHub\CodeLanguage-M-\MLanguage\MLanguage
 import Parser from "./frontend/parser.ts";
 import Environment, { createGlobalEnv } from "./runtime/environment.ts";
 import { evaluate } from "./runtime/interpreter.ts";
