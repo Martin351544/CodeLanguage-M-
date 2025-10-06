@@ -36,3 +36,10 @@ export function eval_identifier(ident: Identifier, env: Enviornment ): RuntimeVa
   const val = env.lookupVar(ident.symbol);
   return val;
 }
+
+export function eval_assignment (node: AssignmentExpr, env: Enviornment): RuntimeVal {
+  if(node.assigne.kind !== "Identifier") 
+    throw `invalid LHS inside assignment expr ${JSON.stringify(node.assigne)}`;
+  const varname = (node.assigne as Identifier).symbol;
+  return env.assignVar(varname, evaluate(node.value));
+}
