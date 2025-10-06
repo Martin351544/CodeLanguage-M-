@@ -5,45 +5,33 @@ import {
   Expr,
   Identifier,
   NumericLiteral,
+  ObjectLiteral,
   Program,
+  Property,
   Stmt,
   VarDeclaration,
 } from "./ast.ts";
 
 import { Token, tokenize, TokenType } from "./lexer.ts";
 
-/**
- * Frontend for producing a valid AST from sourcode
- */
 export default class Parser {
   private tokens: Token[] = [];
 
-  /*
-   * Determines if the parsing is complete and the END OF FILE Is reached.
-   */
   private not_eof(): boolean {
     return this.tokens[0].type != TokenType.EOF;
   }
 
-  /**
-   * Returns the currently available token
-   */
+
   private at() {
     return this.tokens[0] as Token;
   }
 
-  /**
-   * Returns the previous token and then advances the tokens array to the next value.
-   */
+
   private eat() {
     const prev = this.tokens.shift() as Token;
     return prev;
   }
 
-  /**
-   * Returns the previous token and then advances the tokens array to the next value.
-   *  Also checks the type of expected token and throws if the values dnot match.
-   */
   private expect(type: TokenType, err: any) {
     const prev = this.tokens.shift() as Token;
     if (!prev || prev.type != type) {
@@ -61,7 +49,6 @@ export default class Parser {
       body: [],
     };
 
-    // Parse until end of file
     while (this.not_eof()) {
       program.body.push(this.parse_stmt());
     }
@@ -69,9 +56,8 @@ export default class Parser {
     return program;
   }
 
-  // Handle complex statement types
   private parse_stmt(): Stmt {
-    // skip to parse_expr
+
     switch (this.at().type) {
       case TokenType.Let:
       case TokenType.Const:
@@ -81,8 +67,6 @@ export default class Parser {
     }
   }
 
-  // LET IDENT;
-  // ( LET | CONST ) IDENT = EXPR;
   parse_var_declaration(): Stmt {
     const isConstant = this.eat().type == TokenType.Const;
     const identifier = this.expect(
@@ -91,7 +75,7 @@ export default class Parser {
     ).value;
 
     if (this.at().type == TokenType.Semicolon) {
-      this.eat(); // expect semicolon
+      this.eat(); 
       if (isConstant) {
         throw "Must assigne value to constant expression. No value provided.";
       }
@@ -123,24 +107,56 @@ export default class Parser {
     return declaration;
   }
 
-  // Handle expressions
   private parse_expr(): Expr {
     return this.parse_assignment_expr();
   }
 
-  parse_assignment_expr(): Expr {
-    const left = this.parse_additive_expr(); // switch this out with objectExpr
+  private parse_assignment_expr(): Expr {
+    const left = this.parse_object_expr(); 
 
     if (this.at().type == TokenType.Equals) {
-      this.eat(); // advance past equals
+      this.eat(); 
       const value = this.parse_assignment_expr();
       return { value, assigne: left, kind: "AssignmentExpr" } as AssignmentExpr;
     }
 
     return left;
   }
+  parse_object_expr(): Expr {
+    if (this.at().type != TokenType.OpenBrace){
+      return this.parse_additive_expr();
+    }
 
-  // Handle Addition & Subtraction Operations
+    this.eat();
+    const properties = new Array<Property>();
+
+    while (this.not_eof() && this.at().type != TokenType.CloseBrace) {
+      const key = this.expect(TokenType.Identifier, "Object Literal key expected").value;
+      
+      if(this.at().type == TokenType.Comma) {
+        this.eat();
+        properties.push({key, kind: "Property", value: undefined} as Property);
+        continue;
+      } else if(this.at().type == TokenType.CloseBrace) {
+        properties.push({key, kind: "Property", value: undefined} as Property);
+        continue;
+      }
+
+      this.expect(TokenType.Colon, "missing colon following identifier in objectExpr")
+      const value = this.parse_expr();
+
+      properties.push({ kind: "Property", value, key});
+      if (this.at().type != TokenType.CloseBrace) {
+        this.expect(TokenType.Comma, "Expected comma or closing bracket following property");
+        
+      }
+    }
+
+    this.expect(TokenType.CloseBrace, "Object literal missing closing brace");
+    return { kind: "ObjectLiteral", properties } as ObjectLiteral; 
+  }
+
+  
   private parse_additive_expr(): Expr {
     let left = this.parse_multiplicitave_expr();
 
@@ -158,7 +174,7 @@ export default class Parser {
     return left;
   }
 
-  // Handle Multiplication, Division & Modulo Operations
+  
   private parse_multiplicitave_expr(): Expr {
     let left = this.parse_primary_expr();
 
@@ -178,40 +194,34 @@ export default class Parser {
     return left;
   }
 
-  // Orders Of Prescidence
-  // AdditiveExpr
-  // MultiplicitaveExpr
-  // PrimaryExpr
 
-  // Parse Literal Values & Grouping Expressions
   private parse_primary_expr(): Expr {
     const tk = this.at().type;
 
-    // Determine which token we are currently at and return literal value
     switch (tk) {
-      // User defined values.
+
       case TokenType.Identifier:
         return { kind: "Identifier", symbol: this.eat().value } as Identifier;
 
-      // Constants and Numeric Constants
+
       case TokenType.Number:
         return {
           kind: "NumericLiteral",
           value: parseFloat(this.eat().value),
         } as NumericLiteral;
 
-      // Grouping Expressions
+
       case TokenType.OpenParen: {
-        this.eat(); // eat the opening paren
+        this.eat(); 
         const value = this.parse_expr();
         this.expect(
           TokenType.CloseParen,
           "Unexpected token found inside parenthesised expression. Expected closing parenthesis.",
-        ); // closing paren
+        ); 
         return value;
       }
 
-      // Unidentified Tokens and Invalid Code Reached
+     
       default:
         console.error("Unexpected token found during parsing!", this.at());
         Deno.exit(1);

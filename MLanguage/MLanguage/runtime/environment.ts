@@ -1,4 +1,19 @@
-import { RuntimeVal } from "./values.ts";
+import { MK_BOOL, MK_NULL, MK_NUMBER, RuntimeVal } from "./values.ts";
+
+export function createGlobalEnv() {
+  const env = new Environment
+  env.declareVar("c", MK_NUMBER(300000), true);
+  env.declareVar("e", MK_NUMBER(2.71828), true);
+  env.declareVar("g", MK_NUMBER(9.81), true);
+  env.declareVar("pi", MK_NUMBER(3.141592654), true);
+  env.declareVar("GoldenRatio", MK_NUMBER(1.618), true);
+  env.declareVar("true", MK_BOOL(true), true);
+  env.declareVar("false", MK_BOOL(false), true);
+  env.declareVar("null", MK_NULL(), true);
+
+  return env;
+}
+
 
 export default class Environment {
   private parent?: Environment;
@@ -6,9 +21,12 @@ export default class Environment {
   private constants: Set<string>;
 
   constructor(parentENV?: Environment) {
+    const global = parentENV? true : false;
     this.parent = parentENV;
     this.variables = new Map();
     this.constants = new Set();
+
+    
   }
 
   public declareVar(
@@ -30,7 +48,7 @@ export default class Environment {
   public assignVar(varname: string, value: RuntimeVal): RuntimeVal {
     const env = this.resolve(varname);
 
-    // Cannot assign to constant
+
     if (env.constants.has(varname)) {
       throw `Cannot reasign to variable ${varname} as it was declared constant.`;
     }
