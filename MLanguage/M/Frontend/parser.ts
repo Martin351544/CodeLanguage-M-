@@ -7,7 +7,10 @@ import {
   NumericLiteral,
   Program,
   Stmt,
+<<<<<<< HEAD
   VarDeclaration,
+=======
+>>>>>>> parent of b2d6235 (added var decleration)
 } from "./ast.ts";
 
 import { Token, tokenize, TokenType } from "./lexer.ts";
@@ -58,6 +61,7 @@ export default class Parser {
 
   private parse_stmt(): Stmt {
 
+<<<<<<< HEAD
     switch (this.at().type) {
 
       case TokenType.Let:
@@ -67,26 +71,11 @@ export default class Parser {
       default: 
         return this.parse_expr();
     }
+=======
+    return this.parse_expr();
+>>>>>>> parent of b2d6235 (added var decleration)
   }
 
-  parse_var_decleration(): Stmt {
-    const isConstant = this.eat().type == TokenType.Const;
-    const identifier = this.expect(TokenType.Identifier, "Expected identifier name following let | const keywords.").value;
-
-    if(this.at().type == TokenType.SemiColon){
-      this.eat();
-      if (isConstant){
-        throw "Must assign value to constant expression. no value provided";
-      }
-      return { kind: "VarDecleration", identifier, constant: false} as VarDecleration;
-
-    }
-
-    this.expect(TokenType.Equals, "Expected equals token identifier in var decleration");
-    const decleration =  { kind: "VarDecleration" , value: this.parse_expr(), identifier, constant: isConstant,  } as VarDecleration;
-    this.expect (TokenType.SemiColon, "variable decleration staements must end with semicolon,");
-    return decleration;
-  }
   
   private parse_expr(): Expr {
     return this.parse_assignment_expr();
