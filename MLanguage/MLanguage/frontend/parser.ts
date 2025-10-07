@@ -137,8 +137,9 @@ export default class Parser {
       const key = this.expect(TokenType.Identifier, "Object Literal key expected").value;
       
       if(this.at().type == TokenType.Comma) {
+        // ! COMMA IS TAKEN CARE OF HERE BUT FOR SOME REASON IT DON'T WORK (COMMA ERROR)
         this.eat();
-        properties.push({key, kind: "Property", value: undefined} as Property);
+        properties.push({key, kind: "Property"} as Property); // !KEY COULD BE WRONG HERE (COMMA ERROR) 
         continue;
       } else if(this.at().type == TokenType.CloseBrace) {
         properties.push({key, kind: "Property", value: undefined} as Property);
@@ -199,6 +200,7 @@ export default class Parser {
     const member = this.parse_member_expr();
 
     if (this.at().type == TokenType.OpenParen) {
+      // !!!CALL THE CALL EXPR SO THE ERROR'S ORIGIN IS IN THIS (COMMA ERROR)
       return this.parse_call_expr(member);
     }
 
@@ -206,6 +208,7 @@ export default class Parser {
   }
 
   private parse_call_expr(caller: Expr): Expr {
+
     let call_expr: Expr = {
       kind: "CallExpr",
       caller,
@@ -213,6 +216,7 @@ export default class Parser {
     } as CallExpr;
 
     if (this.at().type == TokenType.OpenParen) {
+      
       call_expr = this.parse_call_expr(call_expr);
     }
 
@@ -230,6 +234,7 @@ export default class Parser {
     return args;
   }
 
+  // !!!!MOST PROBABLY IN HERE COMMA ERROR)
   private parse_arguments_list(): Expr[] {
     const args = [this.parse_expr()];
     
@@ -240,6 +245,8 @@ export default class Parser {
     return args;
   }
 
+
+  // !ERROR COMES FROM HERE PARSE MEMBER IS EITHER NOT CALLED OR RETURNS NULL OR THE TYPE OF COMMA IS WRONG (COMMA ERROR)
   private parse_member_expr(): Expr {
     let object = this.parse_primary_expr();
 
@@ -270,9 +277,12 @@ export default class Parser {
     
     }
 
+    // !MIGHT RETURN NULL (COMMA ERROR)
     return object;
   }
 
+
+  // !PROBABLY HERE IF CALLED WRONG (COMMA ERROR)
   private parse_primary_expr(): Expr {
     const tk = this.at().type;
 
@@ -299,10 +309,16 @@ export default class Parser {
         return value;
       }
 
-     
+     // !ERROR CAN ALSO COME FROM HERE IF TYPE IS WRONG OR PARSE MEMBER NOT CALLED SO IT GOES TO DEFAULT (COMMA ERROR)
       default:
         console.error("Unexpected token found during parsing!", this.at());
         Deno.exit(1);
     }
   }
+
+  
+  // !ORDERS OF PRESEDENCE
+  // !ADDITIVE EXPR
+  // !MULTIPLICATIVE EXPR
+  // !PRIMARY EXPR
 }

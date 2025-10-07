@@ -1,5 +1,4 @@
-const foo = 45 / 2;
-
+let foo = 50 / 2;
 
 const obj = {
   x: 100,
@@ -11,4 +10,4 @@ const obj = {
 };
 
 
-foo = obj.foo(bar(x , y)) + 5
+foo = obj.foo(bar(x, y)) 
