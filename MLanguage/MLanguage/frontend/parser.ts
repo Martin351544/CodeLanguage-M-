@@ -246,7 +246,7 @@ export default class Parser {
   }
 
 
-  // !ERROR COMES FROM HERE PARSE MEMBER IS EITHER NOT CALLED OR RETURNS NULL OR THE TYPE OF COMMA IS WRONG (COMMA ERROR)
+  // !ERROR MIGHT COME FROM HERE PARSE MEMBER IS EITHER NOT CALLED OR RETURNS NULL OR THE TYPE OF COMMA IS WRONG (COMMA ERROR)
   private parse_member_expr(): Expr {
     let object = this.parse_primary_expr();
 
@@ -311,7 +311,7 @@ export default class Parser {
 
      // !ERROR CAN ALSO COME FROM HERE IF TYPE IS WRONG OR PARSE MEMBER NOT CALLED SO IT GOES TO DEFAULT (COMMA ERROR)
       default:
-        console.error("Unexpected token found during parsing!", this.at());
+        console.error("Unexpected token found during parsing!", this.at()); // !THIS GETS CALLED(AFTER ALOT OF FUNCTIONS) AND I GET THIS ERROR...
         Deno.exit(1);
     }
   }
