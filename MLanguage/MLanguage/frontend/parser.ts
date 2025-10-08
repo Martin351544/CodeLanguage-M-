@@ -239,7 +239,7 @@ export default class Parser {
   private parse_arguments_list(): Expr[] {
     const args = [this.parse_expr()];
     
-    while (this.at().type == TokenType.Comma && this.eat) {
+    while (this.at().type == TokenType.Comma && this.eat()) {
       args.push(this.parse_assignment_expr());
     }
 
