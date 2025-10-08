@@ -223,19 +223,17 @@ export default class Parser {
   }
 
 
-  // ! COMMA BETWEEN 2 ARGS IS GIVING A PREDEFINED ERROR (COMMA ERROR)
   private parse_args(): Expr[] {
     this.expect(TokenType.OpenParen, "Expected open parenthesis");
     const args = this.at().type == TokenType.CloseParen
       ? []
-      : this.parse_arguments_list(); // !LIST WHERE THE COMMA IS TAKEN CARE OF BUT CLEARLY NOT WORKING (COMMA ERROR)
+      : this.parse_arguments_list(); 
       
     this.expect(TokenType.CloseParen, "missing closing parenthisis in argument list" );
 
     return args;
   }
 
-  // !!!!MOST PROBABLY IN HERE BETWEEN 2 ARGS  (COMMA ERROR)
   private parse_arguments_list(): Expr[] {
     const args = [this.parse_expr()];
     
@@ -246,8 +244,6 @@ export default class Parser {
     return args;
   }
 
-
-  // !ERROR MIGHT COME FROM HERE PARSE MEMBER IS EITHER NOT CALLED OR RETURNS NULL OR THE TYPE OF COMMA IS WRONG (COMMA ERROR)
   private parse_member_expr(): Expr {
     let object = this.parse_primary_expr();
 
@@ -278,12 +274,10 @@ export default class Parser {
     
     }
 
-    // !MIGHT RETURN NULL (COMMA ERROR)
     return object;
   }
 
 
-  // !PROBABLY HERE IF CALLED WRONG (COMMA ERROR)
   private parse_primary_expr(): Expr {
     const tk = this.at().type;
 
@@ -310,23 +304,17 @@ export default class Parser {
         return value;
       }
 
-     // !ERROR CAN ALSO COME FROM HERE IF TYPE IS WRONG OR PARSE MEMBER NOT CALLED SO IT GOES TO DEFAULT (COMMA ERROR)
       default:
-        console.error("Unexpected token found during parsing!", this.at()); // !THIS GETS CALLED(AFTER ALOT OF FUNCTIONS) AND I GET THIS ERROR...
+        console.error("Unexpected token found during parsing!", this.at()); 
         Deno.exit(1);
     }
   }
 
   
-  // !ORDERS OF PRESEDENCE
-  // !ADDITIVE EXPR
-  // !MULTIPLICATIVE EXPR
-  // !PRIMARY EXPR
+  // *ORDERS OF PRESEDENCE
+  // *ADDITIVE EXPR
+  // *MULTIPLICATIVE EXPR
+  // *PRIMARY EXPR
 
-  // ! ... ! ... ! ... ! ... ! 
-  // !POSSIBLE REASONS FOR PREDEFINED COMMA ERROR :
-  // !!! ARGS LIST NOT TAKEN CARE OF PROPERLY
-  // !!!CALL PRIMARY EXPR BEFORE NEEDED 
-  // !!OBJECT MIGHT RETURN NULL
-  // !WONG TYPE OF COMMA
+
 }
