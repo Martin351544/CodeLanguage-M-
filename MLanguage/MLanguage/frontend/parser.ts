@@ -200,7 +200,6 @@ export default class Parser {
     const member = this.parse_member_expr();
 
     if (this.at().type == TokenType.OpenParen) {
-      // !!!CALL THE CALL EXPR SO THE ERROR'S ORIGIN IS IN THIS (COMMA ERROR)
       return this.parse_call_expr(member);
     }
 
@@ -223,18 +222,20 @@ export default class Parser {
     return call_expr;
   }
 
+
+  // ! COMMA BETWEEN 2 ARGS IS GIVING A PREDEFINED ERROR (COMMA ERROR)
   private parse_args(): Expr[] {
     this.expect(TokenType.OpenParen, "Expected open parenthesis");
     const args = this.at().type == TokenType.CloseParen
       ? []
-      : this.parse_arguments_list();
+      : this.parse_arguments_list(); // !LIST WHERE THE COMMA IS TAKEN CARE OF BUT CLEARLY NOT WORKING (COMMA ERROR)
       
     this.expect(TokenType.CloseParen, "missing closing parenthisis in argument list" );
 
     return args;
   }
 
-  // !!!!MOST PROBABLY IN HERE COMMA ERROR)
+  // !!!!MOST PROBABLY IN HERE BETWEEN 2 ARGS  (COMMA ERROR)
   private parse_arguments_list(): Expr[] {
     const args = [this.parse_expr()];
     
@@ -321,4 +322,11 @@ export default class Parser {
   // !ADDITIVE EXPR
   // !MULTIPLICATIVE EXPR
   // !PRIMARY EXPR
+
+  // ! ... ! ... ! ... ! ... ! 
+  // !POSSIBLE REASONS FOR PREDEFINED COMMA ERROR :
+  // !!! ARGS LIST NOT TAKEN CARE OF PROPERLY
+  // !!!CALL PRIMARY EXPR BEFORE NEEDED 
+  // !!OBJECT MIGHT RETURN NULL
+  // !WONG TYPE OF COMMA
 }
