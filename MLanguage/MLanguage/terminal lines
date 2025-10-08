@@ -1,0 +1,7 @@
+these are the terminal lines to run the code 
+
+on PC: cd C:\Users\Admin\Documents\GitHub\CodeLanguage-M-\MLanguage\MLanguage> 
+
+on laptop: cd C:\Users\marti\OneDrive\Documents\GitHub\CodeLanguage-M-\MLanguage\MLanguage
+
+then:  deno run -A main.ts
