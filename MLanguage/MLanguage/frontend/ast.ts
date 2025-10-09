@@ -5,6 +5,7 @@ export type NodeType =
   | "Program"
   | "VarDeclaration"
   | "FunctionDecleration"
+  | "IfDecleration"
 
   | "AssignmentExpr"
   | "MemberExpr"
@@ -40,7 +41,12 @@ export interface FunctionDecleration extends Stmt {
 	body: Stmt[];
 }
 
-
+export interface IfDecleration extends Stmt {
+  kind: "IfDecleration"
+  condition: Expr;
+  thenBranch: Stmt;
+  elseBranch?: Stmt;
+}
 
 export interface Expr extends Stmt {}
 
