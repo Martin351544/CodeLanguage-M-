@@ -41,9 +41,9 @@ export interface FunctionDecleration extends Stmt {
 	body: Stmt[];
 }
 
-export interface IfDecleration extends Stmt {
-  kind: "IfDecleration"
-  condition: Expr;
+export interface IfStmt {
+  kind: "IfDecleration";
+  condition?: Expr;
   thenBranch: Stmt;
   elseBranch?: Stmt;
 }

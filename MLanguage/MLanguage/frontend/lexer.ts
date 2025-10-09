@@ -8,6 +8,7 @@ export enum TokenType {
   Const,
   Function,
   If,
+  Else,
 
   BinaryOperator,
   Equals,
@@ -29,6 +30,7 @@ const KEYWORDS: Record<string, TokenType> = {
   const: TokenType.Const,
   function: TokenType.Function,
   if: TokenType.If,
+  else: TokenType.Else,
 };
 
 export interface Token {

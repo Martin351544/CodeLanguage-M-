@@ -1,4 +1,4 @@
-import { Stmt } from "../frontend/ast.ts";
+import { Expr, Stmt } from "../frontend/ast.ts";
 import Environment from "./environment.ts";
 
 export type ValueType = "null" | "number" | "boolean" | "object" | "native-fn" | "function" | "if";
@@ -59,4 +59,3 @@ export interface FunctionVal extends RuntimeVal {
   declerationEnv: Environment;
   body: Stmt[];
 }
-

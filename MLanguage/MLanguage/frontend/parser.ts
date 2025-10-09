@@ -1,4 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
+
 import {
 	AssignmentExpr,
 	BinaryExpr,
@@ -13,6 +14,7 @@ import {
 	Stmt,
 	VarDeclaration,
 	FunctionDecleration,
+	IfStmt,
 } from "./ast.ts";
 
 import { Token, tokenize, TokenType } from "./lexer.ts";
@@ -44,6 +46,18 @@ export default class Parser {
 		return prev;
 	}
 
+
+	private match(...types: TokenType[]): boolean {
+  		for (const type of types) {
+    		if (this.at().type === type) {
+      		this.eat(); 
+      		return true;
+    		}
+  		}
+  		return false;
+	}
+
+
 	public produceAST(sourceCode: string): Program {
 		this.tokens = tokenize(sourceCode);
 		const program: Program = {
@@ -64,9 +78,27 @@ export default class Parser {
 				return this.parse_var_declaration();
 			case TokenType.Function:
 				return this.parse_fn_declaration();
+			case TokenType.If:
+				return this.parse_if_decleration();
 			default:
 				return this.parse_expr();
 		}
+	}
+
+	parse_if_decleration(): Stmt {
+		this.eat();
+		this.expect(TokenType.OpenBracket, "Expected open bracket ater if declearation");
+		const condition = this.parse_expr();
+		this.expect(TokenType.CloseBracket, "Expected closing bracket after consitions")
+
+		const thenBranch = this.parse_stmt();
+
+		let elseBranch: Stmt | undefined;
+		if(this.match(TokenType.Else)) {
+			elseBranch = this.parse_stmt();
+		}
+
+		return { kind: "IfDecleration" , condition, thenBranch, elseBranch } as IfStmt;
 	}
 
 	parse_fn_declaration(): Stmt {

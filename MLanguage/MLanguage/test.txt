@@ -6,4 +6,8 @@ function minus (lhs, rhs) {
   let result = lhs - rhs;
 }
 
+const x = true;
 
+if (x) {
+  output(3)
+} 
