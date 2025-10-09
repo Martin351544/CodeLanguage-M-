@@ -1,27 +1,15 @@
-import { MK_BOOL, MK_NATIVE_FN, MK_NULL, MK_NUMBER, RuntimeVal } from "./values.ts";
+import { MK_BOOL, MK_NULL, MK_NUMBER, RuntimeVal } from "./values.ts";
 
 export function createGlobalEnv() {
   const env = new Environment
-  // env.declareVar("c", MK_NUMBER(300000), true);
-  // env.declareVar("e", MK_NUMBER(2.71828), true);
-  // env.declareVar("g", MK_NUMBER(9.81), true);
-  // env.declareVar("pi", MK_NUMBER(3.141592654), true);
-  // env.declareVar("GoldenRatio", MK_NUMBER(1.618), true);
+  env.declareVar("c", MK_NUMBER(300000), true);
+  env.declareVar("e", MK_NUMBER(2.71828), true);
+  env.declareVar("g", MK_NUMBER(9.81), true);
+  env.declareVar("pi", MK_NUMBER(3.141592654), true);
+  env.declareVar("GoldenRatio", MK_NUMBER(1.618), true);
   env.declareVar("true", MK_BOOL(true), true);
   env.declareVar("false", MK_BOOL(false), true);
   env.declareVar("null", MK_NULL(), true);
-
-  env.declareVar("output", MK_NATIVE_FN((args, scope ) => { 
-    console.log(...args)
-    return MK_NULL();
-  }) 
-  , true);
-
-
-  function timeFunction(_args: RuntimeVal[], _env: Environment) {
-    return MK_NUMBER(Date.now());
-  }
-  env.declareVar("time", MK_NATIVE_FN(timeFunction), true )
 
   return env;
 }

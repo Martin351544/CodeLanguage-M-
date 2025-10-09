@@ -1,13 +1,13 @@
-function add (x, y) {
-  let result = x + y;
-  result + 5 
+let foo = 50 / 2;
 
-}
+const obj = {
+  x: 100,
+  y: 32,
+  foo: foo,
+  complex: {
+    bar: true,
+  },
+};
 
-function minus (lhs, rhs) {
-  let result = lhs - rhs;
-}
 
-const result = minus(3, 2);
-
-output(result)
+foo = obj.foo(bar(x, y)) 
