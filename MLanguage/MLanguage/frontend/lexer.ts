@@ -104,6 +104,13 @@ export function tokenize(sourceCode: string): Token[] {
       tokens.push(token(src.shift(), TokenType.Dot));
     }
 
+    else if(src[0] == "if") {
+      tokens.push(token(src.shift(), TokenType.If));
+    } 
+    else if(src[0] == "else") {
+      tokens.push(token(src.shift(), TokenType.Else ));
+    }
+
     else {
       
       if (isint(src[0])) {

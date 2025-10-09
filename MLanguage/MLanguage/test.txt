@@ -1,24 +1,18 @@
 function add (x, y) {
   let result = x + y;
-<<<<<<< HEAD
-=======
 
->>>>>>> parent of e8384df (nothin)
 }
 
 function minus (lhs, rhs) {
   let result = lhs - rhs;
 }
 
-<<<<<<< HEAD
-const x = true;
+let result = add (1, 3); 
+let x = true;
 
 if (x) {
-  output(3)
-} 
-=======
-const Mresult = minus(3, 2);
-const Aresult= add(3, 2);
-
-output(Mresult, Aresult)
->>>>>>> parent of e8384df (nothin)
+  output(result)
+}
+else {
+  output(1)
+}

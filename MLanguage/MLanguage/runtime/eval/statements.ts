@@ -1,7 +1,7 @@
-import { FunctionDecleration, Program, VarDeclaration } from "../../frontend/ast.ts";
+import { FunctionDecleration, IfStmt, Program, VarDeclaration } from "../../frontend/ast.ts";
 import Environment from "../environment.ts";
 import { evaluate } from "../interpreter.ts";
-import { FunctionVal, MK_NULL, RuntimeVal } from "../values.ts";
+import { BooleanVal, FunctionVal, MK_NULL, NumberVal, RuntimeVal } from "../values.ts";
 
 export function eval_program(program: Program, env: Environment): RuntimeVal {
   let lastEvaluated: RuntimeVal = MK_NULL();
@@ -36,4 +36,37 @@ export function eval_function_decleration(
   } as FunctionVal
 
   return env.declareVar(declaration.name, fn, true);
+}
+
+export function eval_if_decleration(ifNode: IfStmt, env: Environment): RuntimeVal {
+
+  if (!ifNode.condition) {
+    return MK_NULL();
+  }
+
+  const condVal = evaluate(ifNode.condition, env);
+
+  function isTruthy(val: RuntimeVal): boolean {
+    if(val.type === "boolean") {
+      return (val as BooleanVal).value;
+    }
+    if(val.type === "number") {
+      return (val as NumberVal).value != 0;
+    }
+    if(val.type === "null") {
+      return false;
+    } 
+
+    return true;
+  }
+
+  if(isTruthy(condVal)) {
+    const branchEnv = new Environment(env);
+    return evaluate(ifNode.thenBranch, branchEnv);
+  } else if (ifNode.elseBranch) {
+    const branchEnv = new Environment(env);
+    return evaluate(ifNode.elseBranch, branchEnv);
+  }
+
+  return MK_NULL();
 }

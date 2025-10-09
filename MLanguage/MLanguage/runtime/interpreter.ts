@@ -1,10 +1,12 @@
-import { NumberVal, RuntimeVal } from "./values.ts";
+import { MK_NULL, NumberVal, RuntimeVal } from "./values.ts";
 import {
   AssignmentExpr,
   BinaryExpr,
+  BlockStmt,
   CallExpr,
   FunctionDecleration,
   Identifier,
+  IfStmt,
   NumericLiteral,
   ObjectLiteral,
   Program,
@@ -12,7 +14,7 @@ import {
   VarDeclaration,
 } from "../frontend/ast.ts";
 import Environment from "./environment.ts";
-import { eval_function_decleration, eval_program, eval_var_declaration } from "./eval/statements.ts";
+import { eval_function_decleration, eval_if_decleration, eval_program, eval_var_declaration } from "./eval/statements.ts";
 import {
   eval_assignment,
   eval_binary_expr,
@@ -40,12 +42,20 @@ export function evaluate(astNode: Stmt, env: Environment): RuntimeVal {
       return eval_binary_expr(astNode as BinaryExpr, env);
     case "Program":
       return eval_program(astNode as Program, env);
-
+    case "IfDecleration":
+      return eval_if_decleration(astNode as IfStmt, env);
     case "VarDeclaration":
       return eval_var_declaration(astNode as VarDeclaration, env);
-
     case "FunctionDecleration":
       return eval_function_decleration(astNode as FunctionDecleration, env);
+    case "BlockStmt": {
+      const blockEnv = new Environment(env); 
+      let result: RuntimeVal = MK_NULL();
+      for (const stmt of (astNode as BlockStmt).body) {
+        result = evaluate(stmt, blockEnv);
+      }
+      return result;
+    }
 
     default:
       console.error(

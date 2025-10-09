@@ -90,7 +90,7 @@ export function eval_call_expr (expr: CallExpr, env: Environment): RuntimeVal {
     
     for (let i = 0; i < func.parameters.length; i++) {
       // TODO check bound here
-      // verify arity of function
+      // TODO verify arity of function
       const varname = func.parameters[i]
       scope.declareVar(varname, args[i], false);
     }

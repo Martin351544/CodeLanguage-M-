@@ -15,6 +15,7 @@ import {
 	VarDeclaration,
 	FunctionDecleration,
 	IfStmt,
+  BlockStmt,
 } from "./ast.ts";
 
 import { Token, tokenize, TokenType } from "./lexer.ts";
@@ -80,6 +81,8 @@ export default class Parser {
 				return this.parse_fn_declaration();
 			case TokenType.If:
 				return this.parse_if_decleration();
+			case TokenType.OpenBrace:
+				return this.parse_block_stmt();
 			default:
 				return this.parse_expr();
 		}
@@ -87,9 +90,9 @@ export default class Parser {
 
 	parse_if_decleration(): Stmt {
 		this.eat();
-		this.expect(TokenType.OpenBracket, "Expected open bracket ater if declearation");
+		this.expect(TokenType.OpenParen, "Expected open bracket ater if declearation");
 		const condition = this.parse_expr();
-		this.expect(TokenType.CloseBracket, "Expected closing bracket after consitions")
+		this.expect(TokenType.CloseParen, "Expected closing bracket after consitions")
 
 		const thenBranch = this.parse_stmt();
 
@@ -99,6 +102,17 @@ export default class Parser {
 		}
 
 		return { kind: "IfDecleration" , condition, thenBranch, elseBranch } as IfStmt;
+	}
+
+	private parse_block_stmt(): Stmt {
+		this.expect(TokenType.OpenBrace, "Expected '{' to start block statement");
+		const body: Stmt[] = [];
+		while (this.not_eof() && this.at().type !== TokenType.CloseBrace) {
+			body.push(this.parse_stmt());
+		}
+		this.expect(TokenType.CloseBrace, "Expected '}' to close block statement");
+		return { kind: "BlockStmt", body } as BlockStmt;
+
 	}
 
 	parse_fn_declaration(): Stmt {
