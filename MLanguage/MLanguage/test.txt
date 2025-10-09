@@ -6,10 +6,4 @@ function minus (lhs, rhs) {
   let result = lhs - rhs;
 }
 
-const Mresult = minus(3, 2);
-
-const Aresult= add(3, 2);
-
-output(Mresult + Aresult)
-
 
