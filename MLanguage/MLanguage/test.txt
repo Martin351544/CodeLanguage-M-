@@ -1,5 +1,9 @@
 function add (x, y) {
   let result = x + y;
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 
 }
 
@@ -8,6 +12,14 @@ function minus (lhs, rhs) {
 }
 
 const Mresult = minus(3, 2);
+<<<<<<< Updated upstream
 const Aresult= add(3, 2);
 
 output(Mresult, Aresult)
+=======
+let Aresult = add(4, 5);
+
+let total = Aresult - Mresult;
+
+output(total)
+>>>>>>> Stashed changes

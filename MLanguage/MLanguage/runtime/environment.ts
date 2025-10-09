@@ -18,6 +18,7 @@ export function createGlobalEnv() {
   , true);
 
 
+
   function timeFunction(_args: RuntimeVal[], _env: Environment) {
     return MK_NUMBER(Date.now());
   }
