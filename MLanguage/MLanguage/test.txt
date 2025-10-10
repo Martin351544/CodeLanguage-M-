@@ -7,6 +7,8 @@ function minus (lhs, rhs) {
   let result = lhs - rhs;
 }
 
+let string = "hi";
+
 let result = add (1, 3); 
 let x = false;
 
