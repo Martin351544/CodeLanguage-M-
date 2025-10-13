@@ -10,7 +10,7 @@ function minus (lhs, rhs) {
 let string = "hi";
 
 let result = add (1, 3); 
-let x = false;
+let x = true;
 
 if (x) {
   output(result)
@@ -18,5 +18,3 @@ if (x) {
 else {
   output(1)
 }
-
-output(5)
