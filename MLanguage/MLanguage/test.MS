@@ -18,3 +18,5 @@ else {
 }
 
 output(5)
+
+output("hi")
