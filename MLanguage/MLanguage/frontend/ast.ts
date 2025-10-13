@@ -93,6 +93,10 @@ export interface NumericLiteral extends Expr {
   value: number;
 }
 
+export interface StringLiteral extends Expr {
+  kind: "NumericLiteral";
+  value: number;
+}
 
 export interface Property extends Expr {
   kind: "Property";

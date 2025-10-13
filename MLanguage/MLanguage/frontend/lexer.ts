@@ -2,6 +2,7 @@
 export enum TokenType {
 
   Number,
+  string,
   Identifier,
 
   Let,
