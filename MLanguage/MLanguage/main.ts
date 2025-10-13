@@ -1,21 +1,24 @@
 import Parser from "./frontend/parser.ts";
+import { loadMsFile } from "./loadMsFIle.ts";
 import Environment, { createGlobalEnv } from "./runtime/environment.ts";
 import { evaluate } from "./runtime/interpreter.ts";
 
 
-run("./test.txt");
+
+
+run("test.Ms");
 
 async function run(filename: string) {
   const parser = new Parser();
   const env = createGlobalEnv();
 
-  const input = await Deno.readTextFile(filename);
+  const input = await loadMsFile(filename);
   const program = parser.produceAST(input);
 
-  const result = evaluate(program, env);
+  const _result = evaluate(program, env);
 }
 
-function repl() {
+function _repl() {
   const parser = new Parser();
   const env = createGlobalEnv();
   
@@ -30,7 +33,6 @@ function repl() {
 
     const program = parser.produceAST(input);
 
-    const result = evaluate(program, env);
-
+    const _result = evaluate(program, env);
   }
 }
