@@ -18,4 +18,3 @@ else {
 }
 
 output(5)
-

@@ -1,0 +1,20 @@
+{
+  "iconDefinitions": {
+    "ms-icon": {
+      "iconPath": "./icons/ms-icon.svg"
+    }
+  },
+  "fileExtensions": {
+    "Ms": "ms-icon"
+  },
+  "light": {
+    "fileExtensions": {
+      "Ms": "ms-icon"
+    }
+  },
+  "dark": {
+    "fileExtensions": {
+      "Ms": "ms-icon"
+    }
+  }
+}
