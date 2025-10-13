@@ -147,7 +147,7 @@ export function tokenize(sourceCode: string): Token[] {
         while (src.length > 0 && isString(src[0])) {
           str += src.shift();
         }
-        tokens.push(token(str, TokenType.string));
+        tokens.push(token(str, TokenType.String));
       }
 
       else if (isalpha(src[0])) {
