@@ -15,7 +15,6 @@ export type NodeType =
   | "Property"
   | "ObjectLiteral"
   | "NumericLiteral"
-  | "StringLiteral"
   | "Identifier"
   | "BinaryExpr";
 
@@ -92,11 +91,6 @@ export interface Identifier extends Expr {
 export interface NumericLiteral extends Expr {
   kind: "NumericLiteral";
   value: number;
-}
-
-export interface StringLiteral extends Expr {
-  kind: "StringLiteral";
-  value: string;
 }
 
 

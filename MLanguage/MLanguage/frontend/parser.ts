@@ -395,12 +395,6 @@ export default class Parser {
 					value: parseFloat(this.eat().value),
 				} as NumericLiteral;
 
-			case TokenType.string:
-				return {
-					kind: "StringLiteral",
-					value: this.eat(),
-				} as StringLiteral;
-
 			case TokenType.OpenParen: {
 				this.eat(); 
 				const value = this.parse_expr();

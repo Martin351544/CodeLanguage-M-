@@ -2,7 +2,6 @@
 export enum TokenType {
 
   Number,
-  String,
   Identifier,
 
   Let,
@@ -17,8 +16,6 @@ export enum TokenType {
   Dot,
   Colon,
   Semicolon,
-  OpenQuotation,
-  CloseQuotation,
   OpenParen,
   CloseParen,
   OpenBrace,
@@ -61,15 +58,6 @@ function isint(str: string) {
   return c >= bounds[0] && c <= bounds[1];
 }
 
-function isString(str: string) {
-  if (str.charCodeAt(0) == TokenType.OpenQuotation) {
-    return true;
-  }
-  else {
-    return false;
-  }
-}
-
 export function tokenize(sourceCode: string): Token[] {
   const tokens = new Array<Token>();
   const src = sourceCode.split("");
@@ -81,6 +69,7 @@ export function tokenize(sourceCode: string): Token[] {
     } else if (src[0] == ")") {
       tokens.push(token(src.shift(), TokenType.CloseParen));
     } 
+    
     else if (src[0] == "{") {
       tokens.push(token(src.shift(), TokenType.OpenBrace));
     } else if (src[0] == "}") {
@@ -122,16 +111,6 @@ export function tokenize(sourceCode: string): Token[] {
       tokens.push(token(src.shift(), TokenType.Else ));
     }
 
-    else if (src[0] == '"') {
-      src.shift(); 
-      let value = "";
-      while (src.length > 0 && src[0] != '"') {
-        value += src.shift();
-      }
-      if (src[0] == '"') src.shift();
-        tokens.push(token(value, TokenType.String));
-    }
-    
     else {
       
       if (isint(src[0])) {
@@ -139,17 +118,10 @@ export function tokenize(sourceCode: string): Token[] {
         while (src.length > 0 && isint(src[0])) {
           num += src.shift();
         }
+
+        
         tokens.push(token(num, TokenType.Number));
-      }
-
-      else if (isString(src[0])) {
-        let str = ""
-        while (src.length > 0 && isString(src[0])) {
-          str += src.shift();
-        }
-        tokens.push(token(str, TokenType.string));
-      }
-
+      } 
       else if (isalpha(src[0])) {
         let ident = "";
         while (src.length > 0 && isalpha(src[0])) {
