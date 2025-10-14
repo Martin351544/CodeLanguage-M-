@@ -2,7 +2,8 @@
   "name": "ms",
   "displayName": "ms-language-support",
   "description": "extention for scripting with Mscript",
-  "version": "0.0.4",
+  "publisher": "Martin Weiss",
+  "version": "0.0.6",
   "license": "Proprietary",
   "engines": {
     "vscode": "^1.105.0"
@@ -25,10 +26,9 @@
     }],
     "iconThemes": [
       {
-        "id": "ms",
-        "aliases": ["Ms", "ms"],
-        "extensions": [".Ms"],
-        "configuration": "./language-configuration.json"
+        "id": "ms-file-icons",
+        "label": "Ms File Icon",
+        "path": "./file-icon-theme.json"
       }
     ]
   }
