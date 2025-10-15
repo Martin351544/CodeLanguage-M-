@@ -83,6 +83,37 @@ export function tokenize(sourceCode: string): Token[] {
       tokens.push(token(src.shift(), TokenType.CloseBracket));
     }
 
+    else if (src[0] === '"' || src[0] === "'") {
+      const quote = src.shift();
+      let str = "";
+      let escaped = false;
+
+      while (src.length > 0) {
+        const ch = src.shift();
+        if (escaped) {
+          if (ch === 'n') str += '\n';
+          else if (ch === 'r') str += '\r';
+          else if (ch === 't') str += '\t';
+          else str += ch;
+          escaped = false;
+          continue;
+        }
+
+        if (ch === '\\') {
+          escaped = true;
+          continue;
+        }
+
+        if (ch === quote) {
+          break;
+        }
+
+        str += ch;
+      }
+
+      tokens.push(token(str, TokenType.string));
+    }
+
     else if (
       src[0] == "+" || src[0] == "-" || src[0] == "*" || src[0] == "/" ||
       src[0] == "%"

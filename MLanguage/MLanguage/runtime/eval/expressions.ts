@@ -1,7 +1,7 @@
 import { AssignmentExpr, BinaryExpr, CallExpr, Identifier, ObjectLiteral } from "../../frontend/ast.ts";
 import Environment from "../environment.ts";
 import { evaluate } from "../interpreter.ts";
-import { FunctionVal, MK_NULL, NativeFnValue, NumberVal, ObjectVal, RuntimeVal } from "../values.ts";
+import { FunctionVal, MK_NULL, MK_STRING, NativeFnValue, NumberVal, ObjectVal, RuntimeVal, StringVal } from "../values.ts";
 
 function eval_numeric_binary_expr(
   lhs: NumberVal,
@@ -25,21 +25,21 @@ function eval_numeric_binary_expr(
   return { value: result, type: "number" };
 }
 
-export function eval_binary_expr(
-  binop: BinaryExpr,
-  env: Environment,
-): RuntimeVal {
+export function eval_binary_expr(binop: BinaryExpr, env: Environment): RuntimeVal {
   const lhs = evaluate(binop.left, env);
   const rhs = evaluate(binop.right, env);
 
-  if (lhs.type == "number" && rhs.type == "number") {
-    return eval_numeric_binary_expr(
-      lhs as NumberVal,
-      rhs as NumberVal,
-      binop.operator,
-    );
+  // ✅ String concatenation first
+  if (binop.operator === "+" && (lhs.type === "string" || rhs.type === "string")) {
+    const l = lhs.type === "string" ? (lhs as StringVal).value : String((lhs as NumberVal).value);
+    const r = rhs.type === "string" ? (rhs as StringVal).value : String((rhs as NumberVal).value);
+    return MK_STRING(l + r);
   }
 
+  // Numeric arithmetic
+  if (lhs.type == "number" && rhs.type == "number") {
+    return eval_numeric_binary_expr(lhs as NumberVal, rhs as NumberVal, binop.operator);
+  }
 
   return MK_NULL();
 }

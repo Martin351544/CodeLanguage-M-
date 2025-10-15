@@ -16,6 +16,7 @@ import {
 	FunctionDecleration,
 	IfStmt,
   BlockStmt,
+  StringLiteral,
 } from "./ast.ts";
 
 import { Token, tokenize, TokenType } from "./lexer.ts";
@@ -394,6 +395,12 @@ export default class Parser {
 					kind: "NumericLiteral",
 					value: parseFloat(this.eat().value),
 				} as NumericLiteral;
+			
+			case TokenType.string:
+				return {
+					kind: "StringLiteral",
+					value: this.eat().value,
+				} as StringLiteral;	
 
 			case TokenType.OpenParen: {
 				this.eat(); 

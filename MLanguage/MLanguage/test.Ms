@@ -18,5 +18,6 @@ else {
 }
 
 output(5)
+x = "hi"
 
-let x = "hi";
+output(x)
