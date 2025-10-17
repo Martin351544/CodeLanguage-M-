@@ -2,8 +2,8 @@
   "name": "ms",
   "displayName": "ms-language-support",
   "description": "extention for scripting with Mscript",
-  "publisher": "Martin Weiss",
-  "version": "0.0.6",
+  "publisher": "MartinWeiss",
+  "version": "0.0.7",
   "license": "Proprietary",
   "engines": {
     "vscode": "^1.105.0"

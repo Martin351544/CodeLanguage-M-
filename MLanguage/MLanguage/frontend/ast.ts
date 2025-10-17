@@ -6,6 +6,7 @@ export type NodeType =
   | "VarDeclaration"
   | "FunctionDecleration"
   | "IfDecleration"
+  | "WhileDecleration"
   | "BlockStmt"
 
   | "AssignmentExpr"
@@ -53,6 +54,12 @@ export interface IfStmt {
   condition?: Expr;
   thenBranch: Stmt;
   elseBranch?: Stmt;
+}
+
+export interface WhileStmt {
+  kind: "WhileDecleration";
+  condition?: Expr;
+  body: Stmt;
 }
 
 export interface Expr extends Stmt {}

@@ -1,5 +1,6 @@
 function add (x, y) {
   let result = x + y;
+  output("result acheived")
 
 }
 
@@ -17,7 +18,16 @@ else {
   output(1)
 }
 
-output(5)
-x = "hi"
 
-output(x)
+while(true){
+  if(x) {
+    output("true")
+    x = false
+  }
+  else {
+    output("false")
+    x = true
+  }
+}
+
+output(5)

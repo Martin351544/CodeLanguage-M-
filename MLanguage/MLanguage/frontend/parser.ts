@@ -15,8 +15,9 @@ import {
 	VarDeclaration,
 	FunctionDecleration,
 	IfStmt,
-  BlockStmt,
-  StringLiteral,
+	BlockStmt,
+	StringLiteral,
+  WhileStmt,
 } from "./ast.ts";
 
 import { Token, tokenize, TokenType } from "./lexer.ts";
@@ -82,6 +83,8 @@ export default class Parser {
 				return this.parse_fn_declaration();
 			case TokenType.If:
 				return this.parse_if_decleration();
+			case TokenType.While:
+				return this.parse_while_decleration();
 			case TokenType.OpenBrace:
 				return this.parse_block_stmt();
 			default:
@@ -103,6 +106,17 @@ export default class Parser {
 		}
 
 		return { kind: "IfDecleration" , condition, thenBranch, elseBranch } as IfStmt;
+	}
+
+	parse_while_decleration(): Stmt {
+		this.eat();
+		this.expect(TokenType.OpenParen, "Expected open bracket ater while declearation");
+		const condition = this.parse_expr();
+		this.expect(TokenType.CloseParen, "Expected closing bracket after consitions")
+
+		const body = this.parse_block_stmt();
+
+		return { kind: "WhileDecleration", condition, body } as WhileStmt;
 	}
 
 	private parse_block_stmt(): Stmt {

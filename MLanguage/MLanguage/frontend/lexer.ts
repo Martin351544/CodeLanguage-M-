@@ -9,6 +9,7 @@ export enum TokenType {
   Const,
   Function,
   If,
+  While,
   Else,
 
   BinaryOperator,
@@ -31,6 +32,7 @@ const KEYWORDS: Record<string, TokenType> = {
   const: TokenType.Const,
   function: TokenType.Function,
   if: TokenType.If,
+  while: TokenType.While,
   else: TokenType.Else,
 };
 
@@ -141,6 +143,10 @@ export function tokenize(sourceCode: string): Token[] {
     } 
     else if(src[0] == "else") {
       tokens.push(token(src.shift(), TokenType.Else ));
+    }
+
+    else if(src[0] == "while") {
+      tokens.push(token(src.shift(),TokenType.While));
     }
 
     else {

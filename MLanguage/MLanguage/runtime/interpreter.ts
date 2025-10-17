@@ -13,9 +13,10 @@ import {
   Stmt,
   StringLiteral,
   VarDeclaration,
+  WhileStmt,
 } from "../frontend/ast.ts";
 import Environment from "./environment.ts";
-import { eval_function_decleration, eval_if_decleration, eval_program, eval_var_declaration } from "./eval/statements.ts";
+import { eval_function_decleration, eval_if_decleration, eval_program, eval_var_declaration, eval_while_decleration } from "./eval/statements.ts";
 import {
   eval_assignment,
   eval_binary_expr,
@@ -50,6 +51,8 @@ export function evaluate(astNode: Stmt, env: Environment): RuntimeVal {
       return eval_program(astNode as Program, env);
     case "IfDecleration":
       return eval_if_decleration(astNode as IfStmt, env);
+    case "WhileDecleration":
+      return eval_while_decleration(astNode as WhileStmt, env);
     case "VarDeclaration":
       return eval_var_declaration(astNode as VarDeclaration, env);
     case "FunctionDecleration":
