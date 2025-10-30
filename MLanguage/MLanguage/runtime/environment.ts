@@ -1,5 +1,18 @@
 import { MK_BOOL, MK_NATIVE_FN, MK_NULL, MK_NUMBER, RuntimeVal } from "./values.ts";
 
+function stringifyRuntime(val: any): unknown {
+  switch (val?.type) {
+    case "number":   return val.value;
+    case "string":   return val.value;
+    case "boolean":  return val.value ? "true" : "false";
+    case "null":     return "null";
+    case "object":   return "[object]";
+    case "function": return "[function]";
+    case "native-fn":return "[native fn]";
+    default:         return (val && "value" in val) ? val.value : val;
+  }
+}
+
 export function createGlobalEnv() {
   const env = new Environment
   // env.declareVar("c", MK_NUMBER(300000), true);
@@ -11,11 +24,14 @@ export function createGlobalEnv() {
   env.declareVar("false", MK_BOOL(false), true);
   env.declareVar("null", MK_NULL(), true);
 
-  env.declareVar("output", MK_NATIVE_FN((args, scope ) => { 
-    console.log(...args)
-    return MK_NULL();
-  }) 
-  , true);
+  env.declareVar(
+    "output",
+    MK_NATIVE_FN((args, scope) => {
+      console.log(...args.map(stringifyRuntime));
+      return MK_NULL();
+    }),
+    true
+  );
 
 
   function timeFunction(_args: RuntimeVal[], _env: Environment) {

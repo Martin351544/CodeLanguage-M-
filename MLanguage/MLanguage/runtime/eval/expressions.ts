@@ -29,16 +29,54 @@ export function eval_binary_expr(binop: BinaryExpr, env: Environment): RuntimeVa
   const lhs = evaluate(binop.left, env);
   const rhs = evaluate(binop.right, env);
 
-  // ✅ String concatenation first
   if (binop.operator === "+" && (lhs.type === "string" || rhs.type === "string")) {
     const l = lhs.type === "string" ? (lhs as StringVal).value : String((lhs as NumberVal).value);
     const r = rhs.type === "string" ? (rhs as StringVal).value : String((rhs as NumberVal).value);
     return MK_STRING(l + r);
   }
 
-  // Numeric arithmetic
   if (lhs.type == "number" && rhs.type == "number") {
     return eval_numeric_binary_expr(lhs as NumberVal, rhs as NumberVal, binop.operator);
+  }
+
+  if(binop.operator === "<" || binop.operator === "<=" ||
+    binop.operator === ">" || binop.operator === ">=") {
+      
+      if(lhs.type !== "number" || rhs.type !== "number") {
+        throw new Error(
+          'Operator ${binop.operator} requiers two numbers, got ${lhs.type}' 
+        );
+      }
+
+      const lv = (lhs as NumberVal).value;
+      const rv =(rhs as NumberVal).value;
+
+      switch (binop.operator) {
+        case "<":  return MK_BOOL(lv <  rv);
+        case "<=": return MK_BOOL(lv <= rv);
+        case ">":  return MK_BOOL(lv >  rv);
+        case ">=": return MK_BOOL(lv >= rv);
+      }
+    }
+
+  if (binop.operator === "==" || binop.operator === "!=") {
+    const eq = runtimeEqual(lhs, rhs);
+    return MK_BOOL(binop.operator === "==" ? eq : !eq);
+  }
+
+  return MK_NULL();
+}
+
+function runtimeEqual(a: RuntimeVal, b: RuntimeVal): boolean {
+  if (a.type !== b.type) return false;
+
+  switch (a.type) {
+    case "null":    return true; 
+    case "number":  return (a as NumberVal).value === (b as NumberVal).value;
+    case "string":  return (a as StringVal).value === (b as StringVal).value;
+    case "boolean": return (a as BoolVal).value   === (b as BoolVal).value;
+    case "object":  return a === b; 
+    default:        return a === b; 
   }
 
   return MK_NULL();

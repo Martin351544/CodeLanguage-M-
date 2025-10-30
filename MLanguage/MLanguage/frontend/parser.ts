@@ -129,6 +129,49 @@ export default class Parser {
 		return { kind: "BlockStmt", body } as BlockStmt;
 
 	}
+	parse_relational_expr(): Expr {
+		let left = this.parse_additive_expr();
+
+		while (
+			this.at().type === TokenType.LessThan ||
+			this.at().type === TokenType.LessEqual ||
+			this.at().type === TokenType.GreaterThan ||
+			this.at().type === TokenType.GreaterEqual
+		) {
+			const operator = this.eat().value;
+
+			if (this.at().type === TokenType.CloseParen) {
+			throw new Error(`Missing right-hand side of comparison after '${operator}'`);
+			}
+
+			const right = this.parse_additive_expr();
+
+			left = {
+			kind: "BinaryExpr",
+			operator,
+			left,
+			right,
+			} as BinaryExpr;
+		}
+
+		return left;
+	}
+	parse_equality_expr(): Expr {
+		let left = this.parse_relational_expr();
+
+		while(this.match(TokenType.DoubleEqual, TokenType.NotEquals)) {
+			const opTok = this.eat();
+			const right = this.parse_relational_expr();
+			left = {
+				kind: "BinaryExpr",
+				operator: optok.value as string,
+				left,
+				right,
+			} as binaryExpr;
+		}
+
+		return left;
+	}
 
 	parse_fn_declaration(): Stmt {
 		this.eat(); 
@@ -234,7 +277,7 @@ export default class Parser {
 
 	private parse_object_expr(): Expr {
 		if (this.at().type !== TokenType.OpenBrace) {
-			return this.parse_additive_expr();
+			return this.parse_equality_expr();
 		}
 
 		this.eat(); 
@@ -263,7 +306,7 @@ export default class Parser {
 			const value = this.parse_expr();
 
 			properties.push({ kind: "Property", value, key });
-			if (this.at().type != TokenType.CloseBrace) {
+			if (this.at().type !== TokenType.CloseBrace) {
 				this.expect(
 					TokenType.Comma,
 					"Expected comma or closing bracket following property"
@@ -336,16 +379,21 @@ export default class Parser {
 
 		return call_expr;
 	}
-
 	private parse_args(): Expr[] {
-		this.expect(TokenType.OpenParen, "Expected open parenthesis");
-		const args =
-			this.at().type == TokenType.CloseParen ? [] : this.parse_arguments_list();
+		this.expect(TokenType.OpenParen, "Expected '(' to start argument list");
+		const args: Expr[] = [];
 
-		this.expect(
-			TokenType.CloseParen,
-			"Missing closing parenthesis inside arguments list"
-		);
+		if (this.at().type !== TokenType.CloseParen) {
+			args.push(this.parse_assignment_expr());
+
+			while (this.at().type === TokenType.Comma) {
+			this.eat();
+			if (this.at().type === TokenType.CloseParen) break;
+			args.push(this.parse_assignment_expr());
+			}
+		}
+
+		this.expect(TokenType.CloseParen, "Expected ')' to close argument list");
 		return args;
 	}
 
@@ -371,12 +419,10 @@ export default class Parser {
 			let computed: boolean;
 
 			if (operator.type == TokenType.Dot) {
-				computed = false;
-				property = this.parse_primary_expr();
-				if (property.kind != "Identifier") {
-					throw `Cannonot use dot operator without right hand side being a identifier`;
-				}
-			} else {
+			computed = false;
+			const name = this.expect(TokenType.Identifier, "Expected identifier after '.'").value;
+			property = { kind: "Identifier", symbol: name } as Identifier;
+			}  else {
 				computed = true;
 				property = this.parse_expr();
 				this.expect(
