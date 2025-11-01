@@ -33,6 +33,44 @@ export function createGlobalEnv() {
     true
   );
 
+  env.declareVar(
+    "inputString",
+    MK_NATIVE_FN((args, scope) => {
+      const message = args?.[0] ? stringifyRuntime(args[0]) : "";
+      const res = typeof prompt === "function" ? prompt(message) : null;
+      if (res === null) return MK_NULL();      
+      return MK_STRING(res);
+    }),
+    true
+  );
+
+  env.declareVar(
+  "inputNumber",
+    MK_NATIVE_FN((args, scope) => {
+      const message = args?.[0] ? stringifyRuntime(args[0]) : "";
+      const res = typeof prompt === "function" ? prompt(message) : null;
+      if (res === null) return MK_NULL();
+      const n = parseFloat(res.trim());
+      return Number.isNaN(n) ? MK_NULL() : MK_NUMBER(n);
+    }),
+    true
+  );
+
+  env.declareVar(
+    "inputBool",
+    MK_NATIVE_FN((args, scope) => {
+      const message = args?.[0] ? stringifyRuntime(args[0]) : "";
+      const res = typeof prompt === "function" ? prompt(message) : null;
+      if (res === null) return MK_NULL();
+      const v = res.trim().toLowerCase();
+      const truthy = ["true", "t", "yes", "y", "1"];
+      const falsy  = ["false", "f", "no", "n", "0"];
+      if (truthy.includes(v)) return MK_BOOL(true);
+      if (falsy.includes(v))  return MK_BOOL(false);
+      return MK_NULL(); 
+    }),
+    true
+  );
 
   function timeFunction(_args: RuntimeVal[], _env: Environment) {
     return MK_NUMBER(Date.now());
