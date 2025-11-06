@@ -164,10 +164,10 @@ export default class Parser {
 			const right = this.parse_relational_expr();
 			left = {
 				kind: "BinaryExpr",
-				operator: optok.value as string,
+				operator: opTok.value as string,
 				left,
 				right,
-			} as binaryExpr;
+			} as BinaryExpr;
 		}
 
 		return left;

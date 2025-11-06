@@ -1,7 +1,7 @@
 import { AssignmentExpr, BinaryExpr, CallExpr, Identifier, ObjectLiteral } from "../../frontend/ast.ts";
 import Environment from "../environment.ts";
 import { evaluate } from "../interpreter.ts";
-import { FunctionVal, MK_NULL, MK_STRING, NativeFnValue, NumberVal, ObjectVal, RuntimeVal, StringVal } from "../values.ts";
+import { BooleanVal, FunctionVal, MK_BOOL, MK_NULL, MK_STRING, NativeFnValue, NumberVal, ObjectVal, RuntimeVal, StringVal } from "../values.ts";
 
 function eval_numeric_binary_expr(
   lhs: NumberVal,
@@ -74,7 +74,7 @@ function runtimeEqual(a: RuntimeVal, b: RuntimeVal): boolean {
     case "null":    return true; 
     case "number":  return (a as NumberVal).value === (b as NumberVal).value;
     case "string":  return (a as StringVal).value === (b as StringVal).value;
-    case "boolean": return (a as BoolVal).value   === (b as BoolVal).value;
+    case "boolean": return (a as BooleanVal).value   === (b as BooleanVal).value;
     case "object":  return a === b; 
     default:        return a === b; 
   }

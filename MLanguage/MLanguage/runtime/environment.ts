@@ -1,4 +1,4 @@
-import { MK_BOOL, MK_NATIVE_FN, MK_NULL, MK_NUMBER, RuntimeVal } from "./values.ts";
+import { MK_BOOL, MK_NATIVE_FN, MK_NULL, MK_NUMBER, MK_STRING, RuntimeVal } from "./values.ts";
 
 function stringifyRuntime(val: any): unknown {
   switch (val?.type) {
@@ -36,7 +36,7 @@ export function createGlobalEnv() {
   env.declareVar(
     "inputString",
     MK_NATIVE_FN((args, scope) => {
-      const message = args?.[0] ? stringifyRuntime(args[0]) : "";
+      const message = args?.[0] ? String(stringifyRuntime(args[0])) : "";
       const res = typeof prompt === "function" ? prompt(message) : null;
       if (res === null) return MK_NULL();      
       return MK_STRING(res);
@@ -47,7 +47,7 @@ export function createGlobalEnv() {
   env.declareVar(
   "inputNumber",
     MK_NATIVE_FN((args, scope) => {
-      const message = args?.[0] ? stringifyRuntime(args[0]) : "";
+      const message = args?.[0] ? String(stringifyRuntime(args[0])) : "";
       const res = typeof prompt === "function" ? prompt(message) : null;
       if (res === null) return MK_NULL();
       const n = parseFloat(res.trim());
@@ -59,7 +59,7 @@ export function createGlobalEnv() {
   env.declareVar(
     "inputBool",
     MK_NATIVE_FN((args, scope) => {
-      const message = args?.[0] ? stringifyRuntime(args[0]) : "";
+      const message = args?.[0] ? String(stringifyRuntime(args[0])) : "";
       const res = typeof prompt === "function" ? prompt(message) : null;
       if (res === null) return MK_NULL();
       const v = res.trim().toLowerCase();
