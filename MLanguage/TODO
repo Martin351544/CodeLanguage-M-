@@ -1,3 +1,4 @@
- Task                | Importance          | Hardness
-======================================================
-Add ifs for strings  | quite               | not
+ Task                | Importance          | Hardness   | Details(optional)
+============================================================================
+Add ifs for strings  | quite               | not        |
+Fix the inequality error | Extremely       | a bit      | the error is in the parse equality as it only happens when it is == or !=

@@ -1,5 +1,5 @@
-let x = inputNumber("type a number");
+let x = 10;
 
-if (x == 5) {
+if (x != 5) {
     output("hi")
 }

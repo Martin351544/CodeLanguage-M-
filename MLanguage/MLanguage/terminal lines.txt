@@ -4,4 +4,7 @@ on PC: cd C:\Users\Admin\Documents\GitHub\CodeLanguage-M-\MLanguage\MLanguage
 
 on laptop: cd C:\Users\marti\OneDrive\Documents\GitHub\CodeLanguage-M-\MLanguage\MLanguage
 
+on Mac just cd every wehere
+
+
 then:  deno run -A main.ts

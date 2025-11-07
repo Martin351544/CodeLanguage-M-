@@ -96,7 +96,7 @@ export default class Parser {
 		this.eat();
 		this.expect(TokenType.OpenParen, "Expected open bracket ater if declearation");
 		const condition = this.parse_expr();
-		this.expect(TokenType.CloseParen, "Expected closing bracket after consitions")
+		this.expect(TokenType.CloseParen, "Expected closing bracket after conditions")
 
 		const thenBranch = this.parse_stmt();
 
