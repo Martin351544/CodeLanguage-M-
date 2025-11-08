@@ -471,7 +471,6 @@ export default class Parser {
 				);
 				return value;
 			}
-
 			default:
 				console.error("Unexpected token found during parsing!", this.at());
 				Deno.exit(1);
