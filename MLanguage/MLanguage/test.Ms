@@ -1,5 +1,5 @@
-let x = 10;
+let m = inputNumber("give a number");
 
-if (x != 5) {
-    output("hi")
+if (m > 5) {
+    output("greater than 5")
 }
