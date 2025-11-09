@@ -2,3 +2,4 @@
 ============================================================================
 Add ifs for strings  | quite               | not        |
 Fix the inequality error | Extremely       | a bit      | the error is in line 476 only happens on the == OR !=
+fix the comparison operatiors in total | terribly | quite | the error is that the comparison is not happening... in the ifs
