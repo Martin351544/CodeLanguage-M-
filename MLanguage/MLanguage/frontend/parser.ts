@@ -159,12 +159,12 @@ export default class Parser {
 	parse_equality_expr(): Expr {
 		let left = this.parse_relational_expr();
 
-		while(this.match(TokenType.DoubleEqual, TokenType.NotEquals)) {
-			const opTok = this.eat();
+		while (this.at().type === TokenType.DoubleEqual || this.at().type === TokenType.NotEquals) {
+			const operator = this.eat().value;
 			const right = this.parse_relational_expr();
 			left = {
 				kind: "BinaryExpr",
-				operator: opTok.value as string,
+				operator: operator as string,
 				left,
 				right,
 			} as BinaryExpr;
@@ -227,7 +227,7 @@ export default class Parser {
 		).value;
 
 		if (this.at().type == TokenType.Semicolon) {
-			this.eat(); // expect semicolon
+			this.eat(); // eat semicolon
 			if (isConstant) {
 				throw "Must assigne value to constant expression. No value provided.";
 			}
@@ -472,7 +472,7 @@ export default class Parser {
 				return value;
 			}
 			default:
-				console.error("Unexpected token found during parsing!", this.at());
+				console.error("Unexpected token found during parsing!", this.at()); //! getting the ")"  error here
 				Deno.exit(1);
 		}
 	}

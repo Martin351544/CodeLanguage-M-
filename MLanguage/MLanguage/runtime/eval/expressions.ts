@@ -16,10 +16,11 @@ function eval_numeric_binary_expr(
   } else if (operator == "*") {
     result = lhs.value * rhs.value;
   } else if (operator == "/") {
-    
     result = lhs.value / rhs.value;
-  } else {
+  } else if (operator == "%") {
     result = lhs.value % rhs.value;
+  } else {
+    throw new Error(`Unknown numeric operator: ${operator}`);
   }
 
   return { value: result, type: "number" };
@@ -29,39 +30,48 @@ export function eval_binary_expr(binop: BinaryExpr, env: Environment): RuntimeVa
   const lhs = evaluate(binop.left, env);
   const rhs = evaluate(binop.right, env);
 
+  // String concatenation with +
   if (binop.operator === "+" && (lhs.type === "string" || rhs.type === "string")) {
     const l = lhs.type === "string" ? (lhs as StringVal).value : String((lhs as NumberVal).value);
     const r = rhs.type === "string" ? (rhs as StringVal).value : String((rhs as NumberVal).value);
     return MK_STRING(l + r);
   }
 
-  if (lhs.type == "number" && rhs.type == "number") {
-    return eval_numeric_binary_expr(lhs as NumberVal, rhs as NumberVal, binop.operator);
-  }
-
-  if(binop.operator === "<" || binop.operator === "<=" ||
-    binop.operator === ">" || binop.operator === ">=") {
-      
-      if(lhs.type !== "number" || rhs.type !== "number") {
-        throw new Error(
-          'Operator ${binop.operator} requiers two numbers, got ${lhs.type}' 
-        );
-      }
-
-      const lv = (lhs as NumberVal).value;
-      const rv =(rhs as NumberVal).value;
-
-      switch (binop.operator) {
-        case "<":  return MK_BOOL(lv <  rv);
-        case "<=": return MK_BOOL(lv <= rv);
-        case ">":  return MK_BOOL(lv >  rv);
-        case ">=": return MK_BOOL(lv >= rv);
-      }
+  // Relational comparisons
+  if (
+    binop.operator === "<" ||
+    binop.operator === "<=" ||
+    binop.operator === ">" ||
+    binop.operator === ">="
+  ) {
+    if (lhs.type !== "number" || rhs.type !== "number") {
+      throw new Error(`Operator ${binop.operator} requires two numbers, got ${lhs.type} and ${rhs.type}`);
     }
 
+    const lv = (lhs as NumberVal).value;
+    const rv = (rhs as NumberVal).value;
+
+    switch (binop.operator) {
+      case "<":  return MK_BOOL(lv <  rv);
+      case "<=": return MK_BOOL(lv <= rv);
+      case ">":  return MK_BOOL(lv >  rv);
+      case ">=": return MK_BOOL(lv >= rv);
+    }
+  }
+
+  // Equality comparisons (deep-ish for runtime values)
   if (binop.operator === "==" || binop.operator === "!=") {
     const eq = runtimeEqual(lhs, rhs);
     return MK_BOOL(binop.operator === "==" ? eq : !eq);
+  }
+
+  // Numeric arithmetic
+  if (
+    lhs.type === "number" &&
+    rhs.type === "number" &&
+    ["+", "-", "*", "/", "%"].includes(binop.operator)
+  ) {
+    return eval_numeric_binary_expr(lhs as NumberVal, rhs as NumberVal, binop.operator);
   }
 
   return MK_NULL();
