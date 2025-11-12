@@ -1,4 +1,3 @@
  Task                | Importance          | Hardness   | Details(optional)
 ============================================================================
 Add ifs for strings  | quite               | not        |
-Fix the inequality error | Extremely       | a bit      | the error is in line 476 only happens on the == OR !=
