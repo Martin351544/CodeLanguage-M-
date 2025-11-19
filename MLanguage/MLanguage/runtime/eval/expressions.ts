@@ -1,7 +1,7 @@
-import { AssignmentExpr, BinaryExpr, CallExpr, Identifier, ObjectLiteral } from "../../frontend/ast.ts";
+import { AssignmentExpr, BinaryExpr, CallExpr, Identifier, ObjectLiteral, MemberExpr } from "../../frontend/ast.ts";
 import Environment from "../environment.ts";
 import { evaluate } from "../interpreter.ts";
-import { BooleanVal, FunctionVal, MK_BOOL, MK_NULL, MK_STRING, NativeFnValue, NumberVal, ObjectVal, RuntimeVal, StringVal } from "../values.ts";
+import { BooleanVal, FunctionVal, MK_BOOL, MK_NULL, MK_STRING, NativeFnValue, NumberVal, ObjectVal, ArrayVal, RuntimeVal, StringVal } from "../values.ts";
 
 function eval_numeric_binary_expr(
   lhs: NumberVal,
@@ -121,6 +121,47 @@ export function eval_object_expr (obj: ObjectLiteral, env: Environment): Runtime
     object.properties.set(key, runtimeVal)
   }
   return object;
+}
+
+export function eval_member_expr(expr: MemberExpr, env: Environment): RuntimeVal {
+  const objVal = evaluate(expr.object, env);
+
+  if (objVal.type === "array") {
+    if (!expr.computed) {
+      throw new Error("Arrays only support computed [index] access");
+    }
+    const idxVal = evaluate(expr.property, env);
+    if (idxVal.type !== "number") {
+      throw new Error("Array index must be a number");
+    }
+    const index = (idxVal as NumberVal).value;
+    const arr = objVal as ArrayVal;
+    if (index < 0 || index >= arr.elements.length) {
+      return MK_NULL();
+    }
+    return arr.elements[index];
+  }
+
+  if (objVal.type === "object") {
+    const obj = objVal as ObjectVal;
+    let key: string;
+    if (expr.computed) {
+      const kVal = evaluate(expr.property, env);
+      if (kVal.type === "string") {
+        key = (kVal as StringVal).value;
+      } else if (kVal.type === "number") {
+        key = String((kVal as NumberVal).value);
+      } else {
+        throw new Error("Object property key must be string or number");
+      }
+    } else {
+      key = (expr.property as Identifier).symbol;
+    }
+    const val = obj.properties.get(key);
+    return val ?? MK_NULL();
+  }
+
+  throw new Error("Cannot access property of non-object and non-array value");
 }
 
 export function eval_call_expr (expr: CallExpr, env: Environment): RuntimeVal {

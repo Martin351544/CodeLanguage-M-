@@ -1,7 +1,7 @@
 import { Expr, Stmt } from "../frontend/ast.ts";
 import Environment from "./environment.ts";
 
-export type ValueType = "null" | "number" | "string" | "boolean" | "object" | "native-fn" | "function" | "if";
+export type ValueType = "null" | "number" | "string" | "boolean" | "object" | "array" | "native-fn" | "function" | "if";
 
 export interface RuntimeVal {
   type: ValueType;
@@ -47,6 +47,15 @@ export function MK_STRING(s: string) {
 export interface ObjectVal extends RuntimeVal {
   type: "object";
   properties: Map<string, RuntimeVal>;
+}
+
+export interface ArrayVal extends RuntimeVal {
+  type: "array";
+  elements: RuntimeVal[];
+}
+
+export function MK_ARRAY(elements: RuntimeVal[] = []) {
+  return { type: "array", elements } as ArrayVal;
 }
 
 export type FunctionCall = (args: RuntimeVal[], env: Environment) => RuntimeVal ;

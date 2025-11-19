@@ -9,6 +9,7 @@ import {
 	MemberExpr,
 	NumericLiteral,
 	ObjectLiteral,
+	ArrayLiteral,
 	Program,
 	Property,
 	Stmt,
@@ -442,6 +443,21 @@ export default class Parser {
 		return object;
 	}
 
+	private parse_array_literal(): Expr {
+		this.expect(TokenType.OpenBracket, "Expected '[' to start array literal");
+		const elements: Expr[] = [];
+		if (this.at().type !== TokenType.CloseBracket) {
+			elements.push(this.parse_assignment_expr());
+			while (this.at().type === TokenType.Comma) {
+				this.eat();
+				if (this.at().type === TokenType.CloseBracket) break;
+				elements.push(this.parse_assignment_expr());
+			}
+		}
+		this.expect(TokenType.CloseBracket, "Expected ']' to close array literal");
+		return { kind: "ArrayLiteral", elements } as ArrayLiteral;
+	}
+
 	private parse_primary_expr(): Expr {
 		const tk = this.at().type;
 
@@ -461,6 +477,9 @@ export default class Parser {
 					kind: "StringLiteral",
 					value: this.eat().value,
 				} as StringLiteral;	
+
+			case TokenType.OpenBracket:
+				return this.parse_array_literal();
 
 			case TokenType.OpenParen: {
 				this.eat(); 

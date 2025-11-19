@@ -1,4 +1,4 @@
-import { MK_NULL, NumberVal, RuntimeVal, StringVal } from "./values.ts";
+import { MK_NULL, NumberVal, RuntimeVal, StringVal, ArrayVal, MK_ARRAY } from "./values.ts";
 import {
   AssignmentExpr,
   BinaryExpr,
@@ -9,11 +9,13 @@ import {
   IfStmt,
   NumericLiteral,
   ObjectLiteral,
+  ArrayLiteral,
   Program,
   Stmt,
   StringLiteral,
   VarDeclaration,
   WhileStmt,
+  MemberExpr,
 } from "../frontend/ast.ts";
 import Environment from "./environment.ts";
 import { eval_function_decleration, eval_if_decleration, eval_program, eval_var_declaration, eval_while_decleration } from "./eval/statements.ts";
@@ -23,6 +25,7 @@ import {
   eval_call_expr,
   eval_identifier,
   eval_object_expr,
+  eval_member_expr,
 } from "./eval/expressions.ts";
 
 export function evaluate(astNode: Stmt, env: Environment): RuntimeVal {
@@ -37,10 +40,17 @@ export function evaluate(astNode: Stmt, env: Environment): RuntimeVal {
         value: ((astNode as StringLiteral).value),
         type: "string",
       } as StringVal;
+    case "ArrayLiteral": {
+      const arrNode = astNode as ArrayLiteral;
+      const elements = arrNode.elements.map(el => evaluate(el, env));
+      return MK_ARRAY(elements);
+    }
     case "Identifier":
       return eval_identifier(astNode as Identifier, env);
     case "ObjectLiteral":
       return eval_object_expr(astNode as ObjectLiteral, env);
+    case "MemberExpr":
+      return eval_member_expr(astNode as MemberExpr, env);
     case "CallExpr":
       return eval_call_expr(astNode as CallExpr, env);
     case "AssignmentExpr":

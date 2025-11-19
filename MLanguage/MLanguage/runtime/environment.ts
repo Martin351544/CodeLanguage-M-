@@ -7,6 +7,7 @@ function stringifyRuntime(val: any): unknown {
     case "boolean":  return val.value ? "true" : "false";
     case "null":     return "null";
     case "object":   return "[object]";
+    case "array":    return "[array]";
     case "function": return "[function]";
     case "native-fn":return "[native fn]";
     default:         return (val && "value" in val) ? val.value : val;
@@ -72,9 +73,27 @@ export function createGlobalEnv() {
     true
   );
 
+  env.declareVar(
+    "push",
+    MK_NATIVE_FN((args, scope) => {
+      const target = args[0];
+      if (!target || target.type !== "array") {
+        return MK_NULL();
+      }
+      const arr = target as ArrayVal;
+      for (let i = 1; i < args.length; i++) {
+        arr.elements.push(args[i]);
+      }
+      return target;
+    }),
+    true
+  );
+
   function timeFunction(_args: RuntimeVal[], _env: Environment) {
     return MK_NUMBER(Date.now());
   }
+
+  
   env.declareVar("time", MK_NATIVE_FN(timeFunction), true )
 
   return env;
